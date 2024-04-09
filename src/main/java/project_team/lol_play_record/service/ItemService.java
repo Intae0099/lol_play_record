@@ -257,10 +257,8 @@ public class ItemService {
 
             // Response Body 출력
             System.out.println(response.getBody());
-            logger.info("response body : {}",response.getBody());
             if (response.getBody() != null){
                 logger.info("infodto : {}", response.getBody().getInfo());
-                logger.info("participants : {}", response.getBody().getInfo().participants);
 
                 String imageUrl = "https://ddragon.leagueoflegends.com/cdn/14.7.1/img/";
 
