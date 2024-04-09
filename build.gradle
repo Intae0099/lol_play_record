@@ -34,6 +34,7 @@ tasks.named('test') {
 }
 
 // 빌드시 react 빌드 먼저 수행 후 spring 빌드
+/*
 def frontendDir = "$projectDir/src/main/frontend"
 
 sourceSets {
@@ -74,3 +75,4 @@ task copyReactBuildFiles(type: Copy) {
 	from "$frontendDir/build"
 	into "$projectDir/src/main/resources/static"
 }
+*/
