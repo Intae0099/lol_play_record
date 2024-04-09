@@ -49,10 +49,6 @@ public class ItemService {
                 .encode()
                 .toUri();
 
-
-
-
-        logger.info("item list : {}, {}", item.getName(), serverUrl);
         logger.info("uri : {}", uri);
         try {
             // RestTemplate 생성
@@ -72,8 +68,6 @@ public class ItemService {
 //            ResponseEntity response = restTemplate.exchange(serverUrl, HttpMethod.GET, entity, String.class);
 
             // Response Body 출력
-            System.out.println(response.getBody());
-            logger.info("response body : {}",response.getBody());
             logger.info("response item : {}",response.getBody().getName());
             if (response.getBody().getId() != null){
                 item.setSummonerLevel(response.getBody().getSummonerLevel());
@@ -174,10 +168,7 @@ public class ItemService {
 //            ResponseEntity response = restTemplate.exchange(serverUrl, HttpMethod.GET, entity, String.class);
 
             // Response Body 출력
-            System.out.println(response.getBody());
-            logger.info("response body : {}",response.getBody());
             if (response.getBody().getGameType() != null){
-                System.out.println(response.getBody().getParticipants());
                 return response.getBody().getParticipants();
             }
 
@@ -249,20 +240,14 @@ public class ItemService {
 
             // Request Entity 생성
             HttpEntity entity = new HttpEntity(requestBody.toString(), headers);
-            System.out.println(1111);
             ResponseEntity<MatchDto> response = restTemplate.getForEntity(uri, MatchDto.class);
 //            ResponseEntity response = restTemplate.exchange(serverUrl, HttpMethod.GET, entity, String.class);
 
 
 
             // Response Body 출력
-            System.out.println(response.getBody());
             if (response.getBody() != null){
-                logger.info("infodto : {}", response.getBody().getInfo());
-
                 String imageUrl = "https://ddragon.leagueoflegends.com/cdn/14.7.1/img/";
-
-
 
                 for(int i = 0; i<10; i++){
                     response.getBody().getInfo().participants.get(i).championUrl
