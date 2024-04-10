@@ -280,7 +280,6 @@ public class ItemService {
                             = getItemnameByItemid(response.getBody().getInfo().participants.get(i).item6);
                 }
 
-                return response.getBody().getInfo().participants;
             }
 
         } catch (Exception e){
