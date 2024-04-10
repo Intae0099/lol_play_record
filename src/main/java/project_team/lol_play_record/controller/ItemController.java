@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 public class ItemController {
 
     private final ItemService itemService;
@@ -65,12 +66,14 @@ public class ItemController {
         itemService.deleteItemByName(name);
     }
 
+    @CrossOrigin("*")
     @GetMapping("matchGame/{name}")
     public List<MatchGameDto.ParticipantDto> findMatchGameByName(@PathVariable("name") String name){
         List matchplaylist = itemService.findMatchGameByName(name);
         return matchplaylist;
     }
 
+    @CrossOrigin("*")
     @GetMapping("matches/{matchid}")
     public List<MatchDto.ParticipantDto> findMatchGameByMatchId(@PathVariable("matchid") String matchId){
         List<MatchDto.ParticipantDto> matchessummonerlist = itemService.findMatchGameByMatchId(matchId);
