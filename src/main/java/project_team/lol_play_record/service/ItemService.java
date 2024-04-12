@@ -1,6 +1,8 @@
 package project_team.lol_play_record.service;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.tomcat.util.json.JSONParser;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -13,7 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import project_team.lol_play_record.domain.Item;
 import project_team.lol_play_record.dto.ItemDto;
 import project_team.lol_play_record.dto.MatchDto;
-import project_team.lol_play_record.dto.MatchGameDto;
+import project_team.lol_play_record.dto.CurrentGameDto;
 import project_team.lol_play_record.repository.ItemRepository;
 
 import java.io.IOException;
@@ -49,6 +51,10 @@ public class ItemService {
                 .encode()
                 .toUri();
 
+
+
+
+        logger.info("item list : {}, {}", item.getName(), serverUrl);
         logger.info("uri : {}", uri);
         try {
             // RestTemplate 생성
@@ -68,6 +74,8 @@ public class ItemService {
 //            ResponseEntity response = restTemplate.exchange(serverUrl, HttpMethod.GET, entity, String.class);
 
             // Response Body 출력
+            System.out.println(response.getBody());
+            logger.info("response body : {}",response.getBody());
             logger.info("response item : {}",response.getBody().getName());
             if (response.getBody().getId() != null){
                 item.setSummonerLevel(response.getBody().getSummonerLevel());
@@ -138,46 +146,7 @@ public class ItemService {
         return image;
     }
 
-    public List<MatchGameDto.ParticipantDto> findMatchGameByName(String name){
-        Item item = itemRepository.findByName(name);
-//        String active_gameUrl = "https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner";
-        URI uri = UriComponentsBuilder
-                .fromUriString("https://kr.api.riotgames.com")
-                .path("/lol/spectator/v5/active-games/by-summoner/" + item.getPuuid())
-                .queryParam("api_key",mykey)
-                .build()
-                .encode()
-                .toUri();
 
-        logger.info("uri : {}", uri);
-        try {
-            // RestTemplate 생성
-            RestTemplate restTemplate = new RestTemplate();
-
-            // Request Header 설정
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            // Request Body 설정
-            JSONObject requestBody = new JSONObject();
-            requestBody.put("key", "value");
-
-            // Request Entity 생성
-            HttpEntity entity = new HttpEntity(requestBody.toString(), headers);
-            ResponseEntity<MatchGameDto> response = restTemplate.getForEntity(uri, MatchGameDto.class);
-//            ResponseEntity response = restTemplate.exchange(serverUrl, HttpMethod.GET, entity, String.class);
-
-            // Response Body 출력
-            if (response.getBody().getGameType() != null){
-                return response.getBody().getParticipants();
-            }
-
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public String getSpellnameBySpellId(int spellid){
         switch (spellid){
@@ -212,6 +181,126 @@ public class ItemService {
             return null;
         }
     }
+    /*
+    챔피언id로  챔피언이름 반환하는 함수
+        public String findChampionNameById(long championId){
+            String imageUrl = "https://ddragon.leagueoflegends.com/cdn/14.7.1/data/ko_KR/champion.json";
+
+            URI uri = UriComponentsBuilder
+                    .fromUriString("https://ddragon.leagueoflegends.com/cdn/14.7.1/data/ko_KR/champion.json")
+                    .build()
+                    .encode()
+                    .toUri();
+
+            try {
+                // RestTemplate 생성
+                RestTemplate restTemplate = new RestTemplate();
+
+                // Request Header 설정
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+
+                // Request Body 설정
+                JSONObject requestBody = new JSONObject();
+                requestBody.put("key", "value");
+
+                // Request Entity 생성
+                HttpEntity entity = new HttpEntity(requestBody.toString(), headers);
+                ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
+
+                JSONParser parser = new JSONParser(response.getBody());
+                JSONObject data = (JSONObject) parser.parse();
+                //파싱된 JSON에서 data키값으로 get
+                JSONArray detail = (JSONArray) data.get("data");
+
+
+
+
+
+            } catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+            return "1";
+        }
+    */
+    public List<CurrentGameDto.ParticipantDto> findMatchGameByName(String name, String tagline){
+
+        URI puuiduri = UriComponentsBuilder
+                .fromUriString("https://asia.api.riotgames.com")
+                .path("/riot/account/v1/accounts/by-riot-id/" + name + "/" + tagline)
+                .queryParam("api_key",mykey)
+                .build()
+                .encode()
+                .toUri();
+
+
+
+        logger.info("uri : {}", puuiduri);
+        try {
+            // RestTemplate 생성
+            RestTemplate puuidrestTemplate = new RestTemplate();
+            RestTemplate restTemplate = new RestTemplate();
+
+            // Request Header 설정
+            HttpHeaders puuidheaders = new HttpHeaders();
+            HttpHeaders headers = new HttpHeaders();
+            puuidheaders.setContentType(MediaType.APPLICATION_JSON);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Request Body 설정
+            JSONObject puuidrequestBody = new JSONObject();
+            JSONObject requestBody = new JSONObject();
+            puuidrequestBody.put("key", "value");
+            requestBody.put("key", "value");
+
+
+            // Request Entity 생성
+            HttpEntity puuidentity = new HttpEntity(puuidrequestBody.toString(), puuidheaders);
+            HttpEntity entity = new HttpEntity(requestBody.toString(), headers);
+            ResponseEntity<Map> puuidresponse = puuidrestTemplate.getForEntity(puuiduri, Map.class);
+            String puuid = puuidresponse.getBody().get("puuid").toString();
+
+
+            URI uri = UriComponentsBuilder
+                    .fromUriString("https://kr.api.riotgames.com")
+                    .path("/lol/spectator/v5/active-games/by-summoner/" + puuid)
+                    .queryParam("api_key",mykey)
+                    .build()
+                    .encode()
+                    .toUri();
+            logger.info("uri : {}", uri);
+
+            // Request Entity 생성
+
+            ResponseEntity<CurrentGameDto> response = restTemplate.getForEntity(uri, CurrentGameDto.class);
+
+            if (response.getBody().getGameType() != null){
+                String imageUrl = "https://ddragon.leagueoflegends.com/cdn/14.7.1/img/";
+
+                for(int i = 0; i<10; i++) {
+                    String spell1Name = getSpellnameBySpellId(Long.valueOf(response.getBody().participants.get(i).spell1Id).intValue());
+                    String spell2Name = getSpellnameBySpellId(Long.valueOf(response.getBody().participants.get(i).spell1Id).intValue());
+                    if(spell1Name != null){
+                        response.getBody().participants.get(i).spell1Url
+                                = imageUrl + "spell/" + spell1Name + ".png";
+                    }
+                    if(spell2Name != null){
+                        response.getBody().participants.get(i).spell2Url
+                                = imageUrl + "spell/" + spell2Name + ".png";
+                    }
+                }
+                return response.getBody().getParticipants();
+            }
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public List<MatchDto.ParticipantDto> findMatchGameByMatchId(String matchId){
 
@@ -243,10 +332,8 @@ public class ItemService {
             ResponseEntity<MatchDto> response = restTemplate.getForEntity(uri, MatchDto.class);
 //            ResponseEntity response = restTemplate.exchange(serverUrl, HttpMethod.GET, entity, String.class);
 
-
-
-            // Response Body 출력
             if (response.getBody() != null){
+
                 String imageUrl = "https://ddragon.leagueoflegends.com/cdn/14.7.1/img/";
 
                 for(int i = 0; i<10; i++){

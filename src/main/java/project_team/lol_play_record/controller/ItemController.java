@@ -1,19 +1,19 @@
 package project_team.lol_play_record.controller;
 
+import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project_team.lol_play_record.dto.ItemDto;
 import project_team.lol_play_record.dto.MatchDto;
-import project_team.lol_play_record.dto.MatchGameDto;
+import project_team.lol_play_record.dto.CurrentGameDto;
 import project_team.lol_play_record.service.ItemService;
 
 import java.io.IOException;
 import java.util.List;
 
 @RestController
-@CrossOrigin("*")
 public class ItemController {
 
     private final ItemService itemService;
@@ -66,17 +66,17 @@ public class ItemController {
         itemService.deleteItemByName(name);
     }
 
-    @CrossOrigin("*")
-    @GetMapping("matchGame/{name}")
-    public List<MatchGameDto.ParticipantDto> findMatchGameByName(@PathVariable("name") String name){
-        List matchplaylist = itemService.findMatchGameByName(name);
+    @GetMapping("CurrentGame/{name}/{tagline}")
+    public List<CurrentGameDto.ParticipantDto> findMatchGameByName(
+            @PathVariable("name") String name, @PathVariable("tagline") String tagline){
+        List matchplaylist = itemService.findMatchGameByName(name, tagline);
         return matchplaylist;
     }
 
-    @CrossOrigin("*")
     @GetMapping("matches/{matchid}")
-    public List<MatchDto.ParticipantDto> findMatchGameByMatchId(@PathVariable("matchid") String matchId){
+    public JSONArray findMatchGameByMatchId(@PathVariable("matchid") String matchId){
         List<MatchDto.ParticipantDto> matchessummonerlist = itemService.findMatchGameByMatchId(matchId);
-        return matchessummonerlist;
+        JSONArray json = new JSONArray(matchessummonerlist);
+        return json;
     }
 }
