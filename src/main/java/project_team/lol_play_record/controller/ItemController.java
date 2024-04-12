@@ -66,6 +66,7 @@ public class ItemController {
         itemService.deleteItemByName(name);
     }
 
+    @CrossOrigin("*")
     @GetMapping("CurrentGame/{name}/{tagline}")
     public List<CurrentGameDto.ParticipantDto> findMatchGameByName(
             @PathVariable("name") String name, @PathVariable("tagline") String tagline){
@@ -73,6 +74,7 @@ public class ItemController {
         return matchplaylist;
     }
 
+    @CrossOrigin("*")
     @GetMapping("matches/{matchid}")
     public JSONArray findMatchGameByMatchId(@PathVariable("matchid") String matchId){
         List<MatchDto.ParticipantDto> matchessummonerlist = itemService.findMatchGameByMatchId(matchId);
