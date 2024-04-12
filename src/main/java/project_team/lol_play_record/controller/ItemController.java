@@ -70,7 +70,7 @@ public class ItemController {
     @GetMapping("CurrentGame/{name}/{tagline}")
     public JSONArray findMatchGameByName(
             @PathVariable("name") String name, @PathVariable("tagline") String tagline){
-        List currentGameData = itemService.findMatchGameByName(name, tagline);
+        List<CurrentGameDto.ParticipantDto> currentGameData = itemService.findMatchGameByName(name, tagline);
         JSONArray json = new JSONArray(currentGameData);
         return json;
     }
