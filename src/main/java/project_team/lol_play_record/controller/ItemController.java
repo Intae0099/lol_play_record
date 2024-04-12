@@ -68,10 +68,11 @@ public class ItemController {
 
     @CrossOrigin("*")
     @GetMapping("CurrentGame/{name}/{tagline}")
-    public List<CurrentGameDto.ParticipantDto> findMatchGameByName(
+    public JSONArray findMatchGameByName(
             @PathVariable("name") String name, @PathVariable("tagline") String tagline){
-        List matchplaylist = itemService.findMatchGameByName(name, tagline);
-        return matchplaylist;
+        List currentGameData = itemService.findMatchGameByName(name, tagline);
+        JSONArray json = new JSONArray(currentGameData);
+        return json;
     }
 
     @CrossOrigin("*")

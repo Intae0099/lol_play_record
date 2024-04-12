@@ -75,7 +75,6 @@ public class ItemService {
 
             // Response Body 출력
             System.out.println(response.getBody());
-            logger.info("response body : {}",response.getBody());
             logger.info("response item : {}",response.getBody().getName());
             if (response.getBody().getId() != null){
                 item.setSummonerLevel(response.getBody().getSummonerLevel());
